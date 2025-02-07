@@ -1,12 +1,11 @@
-import { Button } from "@/components/ui/button";
+import FeaturedProducts from "@/components/home/FeaturedProducts";
+import Hero from "@/components/home/Hero";
 
 const HomePage = () => {
   return (
     <div>
-      <h1 className="text-3xl text-muted-foreground"> home page</h1>
-      <Button variant="outline" size="lg" className="capitalize m-8">
-        Click me
-      </Button>
+      <Hero />
+      <FeaturedProducts />
     </div>
   );
 };
