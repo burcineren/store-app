@@ -20,11 +20,11 @@ function LinksDropdown() {
       <DropdownMenuContent className="w-48" align="start" sideOffset={10}>
         {links.map((link) => {
           return (
-            <DropdownMenuTrigger key={link.href}>
+            <DropdownMenuItem key={link.href}>
               <Link href={link.href} className="capitalize w-full">
                 {link.label}
               </Link>
-            </DropdownMenuTrigger>
+            </DropdownMenuItem>
           );
         })}
       </DropdownMenuContent>
