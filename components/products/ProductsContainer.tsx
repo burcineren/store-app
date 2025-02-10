@@ -53,7 +53,7 @@ async function ProductsContainer({
           <h5 className="text-2xl mt-16">
             Sorry, no products matched your search...
           </h5>
-        ) : layout === "gird" ? (
+        ) : layout === "grid" ? (
           <ProductsGrid products={products} />
         ) : (
           <ProductsList products={products} />
