@@ -10,6 +10,7 @@ function NavSearch() {
   const [search, setSearch] = useState(
     searchParams.get("search")?.toString() || ""
   );
+
   const handleSearch = useDebouncedCallback((value: string) => {
     const params = new URLSearchParams(searchParams);
     if (value) {
@@ -19,11 +20,13 @@ function NavSearch() {
     }
     replace(`/products?${params.toString()}`);
   }, 500);
+
   useEffect(() => {
     if (!searchParams.get("search")) {
       setSearch("");
     }
-  }, [searchParams.get("search")]);
+  }, [searchParams]); // Add searchParams to the dependency array
+
   return (
     <Input
       type="search"
