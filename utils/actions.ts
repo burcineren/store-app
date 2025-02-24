@@ -2,7 +2,7 @@
 import db from '@/utils/db';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { productSchema } from './schemas';
+import { productSchema, validateWithZodSchema } from './schemas';
 export const fetchFeaturedProducts = async () => {
     const products = await db.product.findMany({
         where: {
@@ -50,7 +50,8 @@ export const createProductAction = async (prevState: any, formData: FormData): P
     const user = await getAuthUser();
     try {
         const rawData = Object.fromEntries(formData);
-        const validatedFields = productSchema.parse(rawData);
+        const validatedFields = validateWithZodSchema(productSchema, rawData);
+
         await db.product.create({
             data: {
                 ...validatedFields,
@@ -58,8 +59,7 @@ export const createProductAction = async (prevState: any, formData: FormData): P
                 clerkId: user.id,
             },
         });
-
-        return { message: "product created" }
+        return { message: 'product created' };
     } catch (error) {
         return renderError(error);
     }
