@@ -2,7 +2,7 @@
 import db from '@/utils/db';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { productSchema, validateWithZodSchema } from './schemas';
+import { imageSchema, productSchema, validateWithZodSchema } from './schemas';
 export const fetchFeaturedProducts = async () => {
     const products = await db.product.findMany({
         where: {
@@ -33,6 +33,11 @@ export const fetchSingleProduct = async (productId: string) => {
     if (!product) redirect('/products');
     return product;
 };
+const getAdminUser = async () => {
+    const user = await getAuthUser();
+    if (user.id !== process.env.ADMIN_USER_ID) redirect('/');
+    return user;
+};
 const renderError = (error: unknown): { message: string } => {
     console.log(error);
     return {
@@ -50,8 +55,10 @@ export const createProductAction = async (prevState: any, formData: FormData): P
     const user = await getAuthUser();
     try {
         const rawData = Object.fromEntries(formData);
+        const file = formData.get('image') as File;
         const validatedFields = validateWithZodSchema(productSchema, rawData);
-
+        const validateFile = validateWithZodSchema(imageSchema, { image: file });
+        console.log(validateFile)
         await db.product.create({
             data: {
                 ...validatedFields,
@@ -63,4 +70,15 @@ export const createProductAction = async (prevState: any, formData: FormData): P
     } catch (error) {
         return renderError(error);
     }
+    redirect('/admin/products');
+};
+
+export const fetchAdminProducts = async () => {
+    await getAdminUser();
+    const products = await db.product.findMany({
+        orderBy: {
+            createdAt: 'desc',
+        },
+    });
+    return products;
 };
