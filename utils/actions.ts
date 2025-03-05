@@ -69,7 +69,7 @@ export const createProductAction = async (
         const file = formData.get('image') as File;
         const validatedFields = validateWithZodSchema(productSchema, rawData);
         const validatedFile = validateWithZodSchema(imageSchema, { image: file });
-        const fullPath = await uploadImage(validatedFile.image);
+        const fullPath = await uploadImage(file);
 
         await db.product.create({
             data: {
@@ -83,6 +83,7 @@ export const createProductAction = async (
     }
     redirect('/admin/products');
 };
+
 
 export const fetchAdminProducts = async () => {
     await getAdminUser();
