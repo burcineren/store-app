@@ -8,7 +8,7 @@ import {
     productSchema,
     validateWithZodSchema,
 } from './schemas';
-import { uploadImage } from './supabase';
+import { deleteImage, uploadImage } from './supabase';
 import { revalidatePath } from 'next/cache';
 export const getAuthUser = async () => {
     const user = await currentUser();
@@ -101,11 +101,13 @@ export const deleteProductAction = async (prevState: { productId: string }) => {
     await getAdminUser();
 
     try {
-        await db.product.delete({
+        const product = await db.product.delete({
             where: {
                 id: productId,
+
             },
         });
+        await deleteImage(product.image);
         revalidatePath('/admin/products');
         return { message: 'Product deleted successfully' };
     } catch (error) {
